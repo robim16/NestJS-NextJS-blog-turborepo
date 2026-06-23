@@ -1,8 +1,10 @@
 import { Post } from '@/lib/types/modelTypes';
 import PostCard from './postCard';
+import Pagination from './pagination';
 
 type Props = {
     posts: Post[];
+    currentPage: number; totalPages: number
 }
 
 const Posts = (props: Props) => {
@@ -18,6 +20,11 @@ const Posts = (props: Props) => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {props.posts.map(post => <PostCard key={post.id} {...post} />)}
             </div>
+            <Pagination
+                className='mt-4'
+                currentPage={props.currentPage}
+                totalPages={props.totalPages}
+             />
         </section>
     )
 }
