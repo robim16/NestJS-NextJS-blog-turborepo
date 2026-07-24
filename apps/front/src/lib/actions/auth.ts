@@ -7,6 +7,8 @@ import { SignUpFormState } from "../types/formState";
 import { SignUpFormSchema } from "../zodSchemas/signUpFormSchema";
 import { redirect } from "next/navigation";
 import { LoginFormSchema } from "../zodSchemas/loginFormSchema";
+import { createSession } from "../session";
+import { revalidatePath } from "next/cache";
 
 
 export async function signUp(
@@ -59,5 +61,17 @@ export async function signIn(state: SignUpFormState, formData: FormData): Promis
                 message: "Invalid credentials"
             }
         }
+
+        await createSession({
+            user: {
+                id: data.signIn.id,
+                name: data.signIn.name,
+                avatar: data.signIn.avatar
+            },
+            accessToken: data.signIn.accessToken
+        });
+        revalidatePath("/");
+        redirect("/");
+        
     }
 }

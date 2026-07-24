@@ -5,10 +5,12 @@ import { verify } from 'argon2';
 import { JwtService } from '@nestjs/jwt';
 import { AuthJwtPayload } from './types/auth-jwtPayload';
 import { User } from '@prisma/client';
+import { CreateUserInput } from 'src/user/dto/create-user.input';
 
 @Injectable()
 export class AuthService {
-    constructor(private prisma: PrismaService, private jwtService: JwtService) {}
+
+    constructor(private prisma: PrismaService, private jwtService: JwtService) { }
     async validateLocalUser({ email, password }: SignInInput) {
         const user = await this.prisma.user.findUnique({
             where: {
@@ -26,19 +28,19 @@ export class AuthService {
     }
 
     async generateToken(userId: number) {
-        const payload : AuthJwtPayload = { sub: userId };
+        const payload: AuthJwtPayload = { sub: userId };
         const accessToken = await this.jwtService.signAsync(payload);
         return { accessToken };
     }
 
-    async login(user: User){
+    async login(user: User) {
         const { accessToken } = await this.generateToken(user.id);
-        return { 
+        return {
             id: user.id,
             name: user.name,
             avatar: user.avatar,
             accessToken
-         };
+        };
     }
 
     async validateJwtUser(userId: number) {
@@ -51,5 +53,21 @@ export class AuthService {
         if (!user) throw new UnauthorizedException("User not found");
         const currentUser = { id: user.id }
         return currentUser;
+    }
+
+    async validateGoogleUser(googleUser: CreateUserInput) {
+        const user = await this.prisma.user.findUnique({
+            where: {
+                email: googleUser.email
+            }
+        })
+
+        if (user) return user
+
+        return await this.prisma.user.create({
+            data: {
+                ...googleUser
+            }
+        })
     }
 }
