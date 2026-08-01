@@ -2,7 +2,7 @@ import { getSession } from "@/lib/session";
 import Link from "next/link"
 import { PropsWithChildren } from "react"
 import SignInPanel from "./signInPanel";
-import Profile from "./profile";
+import Profile from "./Profile";
 
 type Props = PropsWithChildren
 

@@ -62,12 +62,18 @@ export class AuthService {
             }
         })
 
-        if (user) return user
+        if (user) {
+            const { password, ...authUser } = user;
+            return authUser;
+        }
 
-        return await this.prisma.user.create({
+        const dbUser = await this.prisma.user.create({
             data: {
                 ...googleUser
             }
         })
+
+        const { password, ...authUser } = dbUser;
+        return authUser;
     }
 }
