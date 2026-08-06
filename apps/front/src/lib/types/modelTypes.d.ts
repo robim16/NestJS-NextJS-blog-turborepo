@@ -28,7 +28,7 @@ export type Tag = {
     name: string;
 }
 
-export type CommentModel = {
+export type CommentEntity = {
     id: number;
     content: string;
     post: Post;

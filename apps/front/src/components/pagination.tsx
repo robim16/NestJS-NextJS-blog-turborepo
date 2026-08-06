@@ -7,6 +7,7 @@ type Props = {
     totalPages: number
     currentPage: number
     pageNeighbors?: number
+    setCurrentPage: (page: number) => void;
     className?: string
 }
 
@@ -14,6 +15,7 @@ const Pagination = ({
     totalPages,
     currentPage,
     pageNeighbors = 2,
+    setCurrentPage,
     className,
 }: Props) => {
 
@@ -23,35 +25,47 @@ const Pagination = ({
         totalPages
     })
 
-    return <div className={cn("flex items-center justify-center gap-2", className)}>
-        {currentPage !== 1 && (
-            <button className={cn("rounded-md bg-slate-200 py-2 px-2")}>
-                <Link href={`?page=${currentPage - 1}`}>
-                    <ChevronLeftIcon className="w-4" />
-                </Link>
-            </button>
-        )}
+    const handleClick = (page: number) => {
+        if (page > 0 && page <= totalPages) setCurrentPage(page)
+    }
 
-        {pageNumbers.map((page, index) => (
-            <button
-                key={index}
-                className={cn("px-3 py-1 rounded-md transition hover:text-sky-600", {
-                    "bg-slate-200": currentPage !== page && page !== "...",
-                    "bg-blue-500 text-white": currentPage === page,
-                    "cursor-not-allowed": page === "...",
-                })}
-            >
-                {page === "..." ? "..." : <Link href={`?page=${page}`}>{page}</Link>}
-            </button>
-        ))}
-        {currentPage !== totalPages && (
-            <button className="rounded-md bg-slate-200 py-2 px-2">
-                <Link href={`?page=${currentPage + 1}`}>
+    return (
+        <div className={cn(className, "flex items-center justify-center gap-2")}>
+            {/* pervious page button */}
+            {currentPage !== 1 && (
+                <button
+                    onClick={() => handleClick(currentPage - 1)}
+                    className={cn("rounded-md bg-slate-200 py-2 px-2")}
+                >
+                    <ChevronLeftIcon className="w-4" />
+                </button>
+            )}
+
+            {pageNumbers.map((page, index) => (
+                <button
+                    onClick={() => handleClick(page)}
+                    key={index}
+                    disabled={page === "..."}
+                    className={cn("px-3 py-1 rounded-md transition hover:text-sky-600", {
+                        "bg-slate-200": currentPage !== page && page !== "...",
+                        "bg-blue-500 text-white": currentPage === page,
+                        "cursor-not-allowed": page === "...",
+                    })}
+                >
+                    {page === "..." ? "..." : <span>{page}</span>}
+                </button>
+            ))}
+            {/* next page button */}
+            {currentPage !== totalPages && (
+                <button
+                    onClick={() => handleClick(currentPage + 1)}
+                    className="rounded-md bg-slate-200 py-2 px-2"
+                >
                     <ChevronRightIcon className="w-4" />
-                </Link>
-            </button>
-        )}
-    </div>
+                </button>
+            )}
+        </div>
+    );
 }
 
 export default Pagination
