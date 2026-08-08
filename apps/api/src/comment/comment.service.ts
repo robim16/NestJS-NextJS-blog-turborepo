@@ -6,6 +6,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class CommentService {
+
   constructor(private readonly prisma: PrismaService) { }
 
   async findOneByPost({
@@ -40,4 +41,21 @@ export class CommentService {
     });
   }
 
+  async create(createCommentInput: CreateCommentInput, authorId: number) {
+    return await this.prisma.comment.create({
+      data: {
+        content: createCommentInput.content,
+        post: {
+          connect: {
+            id: createCommentInput.postId,
+          },
+        },
+        author: {
+          connect: {
+            id: authorId,
+          },
+        },
+      },
+    });
+  }
 }

@@ -6,6 +6,7 @@ import { DEFAULT_PAGE_SIZE } from "@/lib/constants";
 import { useState } from "react";
 import CommentCard from "./commentCard";
 import CommentPagination from "./commentPagination";
+import CommentCardSkeleton from "./commentCardSkeleton";
 
 type Props = {
   postId: number;
@@ -28,8 +29,15 @@ const Comments = async ({ postId }: Props) => {
   return (
     <div className="p-2 rounded-md shadow-md">
       <h6 className="text-lg text-slate-700">Comments</h6>
-      <div className="flex flex-col gap-2">
-        {data?.comments.map((comment) => <CommentCard key={comment.id} comment={comment} />)}
+      <div className="flex flex-col gap-4">
+        {isLoading 
+          ? Array.from({ length: 12 }).map((_, index) => (
+              <CommentCardSkeleton key={index} />
+            ))
+          : data?.comments.map((comment) => (
+            <CommentCard key={comment.id} comment={comment} />
+          ))
+        }
       </div>
       <CommentPagination className="p-2" currentPage={page} totalPages={totalPages} setCurrentPage={(p) => setPage(p)} />
     </div>
