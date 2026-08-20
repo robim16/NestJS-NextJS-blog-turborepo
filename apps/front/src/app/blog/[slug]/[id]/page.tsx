@@ -4,6 +4,7 @@ import DOMPurify from "dompurify"
 import SanitizedContent from "./_components/SanitizedContent"
 import Comments from "./_components/comments"
 import { getSession } from "@/lib/session"
+import Like from "./_components/like"
 
 type Props = {
     params: {
@@ -31,6 +32,8 @@ const PostPage = async ({ params }: Props) => {
         </div>
 
         <SanitizedContent content={post.content} />
+
+        <Like postId={post.id} user={session?.user} />
 
         <Comments user={session?.user} postId={post.id} />
         
