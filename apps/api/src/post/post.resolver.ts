@@ -11,7 +11,7 @@ import { skip } from 'node:test';
 export class PostResolver {
   constructor(private readonly postService: PostService) { }
 
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Query(() => [Post], { name: 'posts' })
   findAll(@Context() context,
     @Args('skip', { nullable: true }) skip?: number,
@@ -29,8 +29,18 @@ export class PostResolver {
   }
 
   @Query(() => Post)
-  getPostById(@Args("id", {type: () => Int}) id: number){
+  getPostById(@Args("id", { type: () => Int }) id: number) {
     return this.postService.findOne(id)
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Query(() => [Post])
+  getUserPosts(
+    @Context() context,
+    @Args('skip', { nullable: true }) skip?: number,
+    @Args('take', { nullable: true }) take?: number
+  ) {
+    const userId = context.req.user.id
+    return this.postService.findByUser(userId, skip, take)
+  }
 }
