@@ -6,16 +6,17 @@ import { DEFAULT_PAGE_SIZE } from 'src/constants';
 
 @Injectable()
 export class PostService {
-  
-  constructor(private prisma: PrismaService) {}
-  
-  async findAll({skip=0, take=DEFAULT_PAGE_SIZE}:{skip?:number; take?:number}) {
+
+
+  constructor(private prisma: PrismaService) { }
+
+  async findAll({ skip = 0, take = DEFAULT_PAGE_SIZE }: { skip?: number; take?: number }) {
     return await this.prisma.post.findMany({
-      skip, 
+      skip,
       take
     });
   }
-  
+
   async count() {
     return await this.prisma.post.count();
   }
@@ -32,7 +33,7 @@ export class PostService {
     })
   }
 
-  async findByUser({userId, skip, take}: { userId: number; skip: number; take: number }) {
+  async findByUser({ userId, skip, take }: { userId: number; skip: number; take: number }) {
     return await this.prisma.post.findMany({
       where: {
         author: {
@@ -47,9 +48,47 @@ export class PostService {
         slug: true,
         title: true,
         thumbnail: true,
+        _count: {
+          select: {
+            comments: true,
+            tags: true
+          }
+        }
       },
       skip,
       take
+    })
+  }
+
+  async userPostCount(userId: number) {
+    return this.prisma.post.count({
+      where: {
+        authorId: userId,
+      },
+    });
+  }
+
+  async create({
+    createPostInput, authorId
+  }: {
+    createPostInput: CreatePostInput;
+    authorId: number;
+  }) {
+    return await this.prisma.post.create({
+      data: {
+        ...createPostInput,
+        author: {
+          connect: {
+            id: authorId
+          },
+        },
+        tags: {
+          connectOrCreate: createPostInput.tags.map((tag) => ({
+            where: { name: tag },
+            create: { name: tag }
+          }))
+        }
+      }
     })
   }
 }
