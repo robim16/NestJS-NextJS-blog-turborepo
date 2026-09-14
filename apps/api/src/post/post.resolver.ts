@@ -60,6 +60,15 @@ export class PostResolver {
   @Mutation(() => Post)
   createPost(@Context() context, @Args('createPostInput') createPostInput: CreatePostInput) {
     const authorId = context.req.user.id;
-    return this.postService.create(createPostInput, authorId);
+    return this.postService.create({createPostInput, authorId});
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Mutation(() => Post)
+  updatePost(@Context() context, 
+  @Args("postId", { type: () => Int }) postId: number,
+  @Args('updatePostInput') updatePostInput: UpdatePostInput) {
+    const userId = context.req.user.id;
+    return this.postService.update({ userId, updatePostInput });
   }
 }

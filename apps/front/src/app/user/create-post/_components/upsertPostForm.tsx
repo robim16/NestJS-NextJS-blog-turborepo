@@ -31,6 +31,7 @@ const UpsertPostForm = ({ state, formAction }: Props) => {
         <form
             action={formAction}
             className="flex flex-col gap-5 [&>div>label]:text-slate-500 [&>div>input]:transition [&>div>textarea]:transition">
+            <input type="hidden" name="postId" value={state?.data?.postId} />
             <div>
                 <Label htmlFor="title">Title</Label>
                 <Input name="title"
@@ -67,9 +68,9 @@ const UpsertPostForm = ({ state, formAction }: Props) => {
                             setImageUrl(URL.createObjectURL(e.target.files[0]))
                     }}
                 />
-                {!!imageUrl && (
+                {!!imageUrl && !!state?.data?.previousThumbnailUrl && (
                     <Image
-                        src={imageUrl}
+                        src={(imageUrl || state?.data?.previousThumbnailUrl) ?? ""}
                         alt="Thumbnail Preview"
                         width={200}
                         height={150}
@@ -94,7 +95,7 @@ const UpsertPostForm = ({ state, formAction }: Props) => {
             <div className="flex items-center gap-2">
                 <Label htmlFor="published">Published Now</Label>
                 <Input type="checkbox" className="mx-2 w-4 h-4" name="published"
-                    defaultValue={state?.data?.published} />
+                    defaultChecked={state?.data?.published === "on" ? true : false} />
             </div>
             {!!state?.errors?.isPublished && (
                 <p className="text-red-500 animate-shake">{state?.errors.isPublished}</p>
