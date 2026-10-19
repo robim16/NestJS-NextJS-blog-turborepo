@@ -28,21 +28,23 @@ export async function getPostComments({
 }
 
 export async function saveComment(state: CreateCommentFormState, formData: FormData):
- Promise<CreateCommentFormState> {
+    Promise<CreateCommentFormState> {
 
     const validatedFields = commentFormSchema.safeParse(
         Object.fromEntries(formData.entries())
     )
 
     if (!validatedFields.success) {
-       data: Object.fromEntries(formData.entries()),
-       errors: validatedFields.error.flatten().fieldErrors,
+        return {
+            data: Object.fromEntries(formData.entries()),
+            errors: validatedFields.error.flatten().fieldErrors,
+        }
     }
 
-    const data = await authFetchGraphQL(print(CREATE_COMMENT_MUTATION),{
+    const data = await authFetchGraphQL(print(CREATE_COMMENT_MUTATION), {
         input: {
             ...validatedFields.data,
-        } 
+        }
     });
 
     if (data) return {

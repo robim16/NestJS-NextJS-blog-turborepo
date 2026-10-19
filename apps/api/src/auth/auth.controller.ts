@@ -1,3 +1,4 @@
+import * as Express from 'express'; 
 import { Controller, Get, Request, Res, UseGuards } from '@nestjs/common';
 import { GoogleAuthGuard } from './guards/google-auth/google-auth.guard';
 import { AuthService } from './auth.service';
@@ -14,7 +15,7 @@ export class AuthController {
 
     @UseGuards(GoogleAuthGuard)
     @Get('google/callback')
-    async googleCallback(@Request() req, @Res() res: Response) {
+    async googleCallback(@Request() req, @Res() res: Express.Response) {
 
         const userData = await this.authService.login(req.user)
         res.redirect(

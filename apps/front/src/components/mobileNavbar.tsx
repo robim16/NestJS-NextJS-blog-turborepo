@@ -1,5 +1,4 @@
 import { PropsWithChildren } from "react"
-import Sidebar from "./ui/SideBar"
 import SideBar from "./ui/SideBar"
 import { Bars3Icon } from "@heroicons/react/16/solid"
 

@@ -10,11 +10,9 @@ export class CreateUserInput {
   @Field()
   password: string;
 
-
   @Field()
   @IsEmail()
   email: string;
-
 
   @Field({ nullable: true })
   bio?: string;

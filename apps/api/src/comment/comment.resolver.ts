@@ -25,7 +25,7 @@ export class CommentResolver {
     })
     skip: number
   ) {
-    return this.commentService.findOneByPost(postId, take, skip);
+    return this.commentService.findOneByPost({postId, take, skip});
   }
 
   @Query(() => Int)
