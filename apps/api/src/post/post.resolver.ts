@@ -30,7 +30,7 @@ export class PostResolver {
   }
 
   @Query(() => Post)
-  getPostById(@Args("id", { type: () => Int }) id: number) {
+  getPostById(@Args('id', { type: () => Int }) id: number) {
     return this.postService.findOne(id)
   }
 
@@ -66,7 +66,7 @@ export class PostResolver {
   @UseGuards(JwtAuthGuard)
   @Mutation(() => Post)
   updatePost(@Context() context, 
-  @Args("postId", { type: () => Int }) postId: number,
+  @Args('postId', { type: () => Int }) postId: number,
   @Args('updatePostInput') updatePostInput: UpdatePostInput) {
     const userId = context.req.user.id;
     return this.postService.update({ userId, updatePostInput });
@@ -74,7 +74,7 @@ export class PostResolver {
 
   @Mutation(() => Boolean)
   @UseGuards(JwtAuthGuard)
-  deletePost(@Context() context, @Args("postId", { type: () => Int }) postId: number) {
+  deletePost(@Context() context, @Args('postId', { type: () => Int }) postId: number) {
     const userId = context.req.user.id;
     return this.postService.delete({ postId, userId });
   }

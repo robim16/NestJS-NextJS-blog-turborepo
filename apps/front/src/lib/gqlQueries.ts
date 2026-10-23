@@ -18,18 +18,21 @@ export const GET_POSTS = gql`
 
 export const GET_POST_BY_ID = gql`
   query getPostById($id: Int!) {
-    id
-    title
-    thumbnail
-    content
-    createdAt
-    slug
-    author {
-      name
-    }
-    tags {
+    getPostById(id: $id) {
       id
-      name
+      title
+      thumbnail
+      content
+      createdAt
+      slug
+      published
+      author {
+        name
+      }
+      tags {
+        id
+        name
+      }
     }
   }
 `
@@ -139,4 +142,3 @@ export const DELETE_POST_MUTATION = gql`
     deletePost(postId: $postId)
   }
 `;
-
